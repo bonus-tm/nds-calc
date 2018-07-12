@@ -15,7 +15,7 @@ const calcCorrectly = ({amount, price, ndsValue, roundMethod, precision}) => {
     : round(price / (1 + ndsValue), precision)
   let totalWithoutNds = amount * priceWithoutNds
   let total = round(totalWithoutNds * (1 + ndsValue), precision)
-  let totalNdsOnly = total - totalWithoutNds
+  let totalNdsOnly = round(total - totalWithoutNds)
   return {total, totalNdsOnly, totalWithoutNds, priceWithoutNds}
 }
 
@@ -30,7 +30,7 @@ const calcCorrectly = ({amount, price, ndsValue, roundMethod, precision}) => {
 const calcIncorrectly = ({amount, price, ndsValue, precision}) => {
   let total = amount * price
   let totalWithoutNds = round(total / (1 + ndsValue), precision)
-  let totalNdsOnly = total - totalWithoutNds
+  let totalNdsOnly = round(total - totalWithoutNds)
   let priceWithoutNds = round(totalWithoutNds / amount, precision)
   return {total, totalNdsOnly, totalWithoutNds, priceWithoutNds}
 }

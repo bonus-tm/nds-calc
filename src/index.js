@@ -26,7 +26,7 @@ const calcCorrectly = ({ amount, price, ndsValue, roundMethod, precision }) => {
   let priceWithoutNds = roundMethod === 'floor' ? (0, _floor2.default)(price / (1 + ndsValue), precision) : (0, _round2.default)(price / (1 + ndsValue), precision);
   let totalWithoutNds = amount * priceWithoutNds;
   let total = (0, _round2.default)(totalWithoutNds * (1 + ndsValue), precision);
-  let totalNdsOnly = total - totalWithoutNds;
+  let totalNdsOnly = (0, _round2.default)(total - totalWithoutNds);
   return { total, totalNdsOnly, totalWithoutNds, priceWithoutNds };
 };
 
@@ -41,7 +41,7 @@ const calcCorrectly = ({ amount, price, ndsValue, roundMethod, precision }) => {
 const calcIncorrectly = ({ amount, price, ndsValue, precision }) => {
   let total = amount * price;
   let totalWithoutNds = (0, _round2.default)(total / (1 + ndsValue), precision);
-  let totalNdsOnly = total - totalWithoutNds;
+  let totalNdsOnly = (0, _round2.default)(total - totalWithoutNds);
   let priceWithoutNds = (0, _round2.default)(totalWithoutNds / amount, precision);
   return { total, totalNdsOnly, totalWithoutNds, priceWithoutNds };
 };
