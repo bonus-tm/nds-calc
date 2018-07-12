@@ -1,17 +1,19 @@
 import round from 'lodash/round'
+import floor from 'lodash/floor'
 
 /**
  * Правильный способ расчёта НДС:
- * сперва вычислить цену без НДС, округлить, а потом умножать на количество
+ * сперва вычислить цену без НДС из простой цены,
+ * округлить, а потом умножать на количество
  *
- * @param {object} row {amount, price} — required fields are 'amount' and 'price'
- * @param {number} ndsValue — 0.18
- * @param {number} precision — default 2
- * @returns {{total, totalNdsOnly, totalWithoutNds, priceWithoutNds}}
+ * @param {object}
+ * @returns {object}
  */
-const calcCorrectly = (row, ndsValue, precision) => {
-  let priceWithoutNds = round(row.price / (1 + ndsValue), precision)
-  let totalWithoutNds = row.amount * priceWithoutNds
+const calcCorrectly = ({amount, price, ndsValue, roundMethod, precision}) => {
+  let priceWithoutNds = roundMethod === 'floor'
+    ? floor(price / (1 + ndsValue), precision)
+    : round(price / (1 + ndsValue), precision)
+  let totalWithoutNds = amount * priceWithoutNds
   let total = round(totalWithoutNds * (1 + ndsValue), precision)
   let totalNdsOnly = total - totalWithoutNds
   return {total, totalNdsOnly, totalWithoutNds, priceWithoutNds}
@@ -19,18 +21,17 @@ const calcCorrectly = (row, ndsValue, precision) => {
 
 /**
  * Неправильный способ:
- * сперва вычисляется сумма с НДС, а потом из неё цена без НДС
+ * сперва умножением простой цены на количество вычисляется сумма с НДС,
+ * а потом из неё рассчитывается цена без НДС
  *
- * @param {object} row {amount, price} — required fields are 'amount' and 'price'
- * @param {number} ndsValue — 0.18
- * @param {number} precision — default 2
- * @returns {{total, totalNdsOnly, totalWithoutNds, priceWithoutNds}}
+ * @param {object}
+ * @returns {object}
  */
-const calcIncorrectly = (row, ndsValue, precision) => {
-  let total = row.amount * row.price
+const calcIncorrectly = ({amount, price, ndsValue, precision}) => {
+  let total = amount * price
   let totalWithoutNds = round(total / (1 + ndsValue), precision)
   let totalNdsOnly = total - totalWithoutNds
-  let priceWithoutNds = round(totalWithoutNds / row.amount, precision)
+  let priceWithoutNds = round(totalWithoutNds / amount, precision)
   return {total, totalNdsOnly, totalWithoutNds, priceWithoutNds}
 }
 
@@ -42,14 +43,24 @@ const calcIncorrectly = (row, ndsValue, precision) => {
  *  totalWithoutNds — сумма без НДС
  *  priceWithoutNds — цена единицы товара без НДС
  *
- * @param {object} row {amount, price} — required fields are 'amount' and 'price'
- * @param {number} ndsValue — 0.18
- * @param {number} precision — default 2
- * @param {boolean} correctWay — использовать правильный или нет способ расчёта НДС
+ * @param {object}
+ *  {number} amount — количество
+ *  {number} price — цена с НДС
+ *  {number} ndsValue — значение НДС (0.18)
+ *  {string} roundMethod — способ округления копеек ('floor' либо 'round')
+ *  {number} precision — до какого знака округлять при расчётах (до копеек, 2)
+ *  {boolean} correctWay — использовать правильный или нет способ расчёта НДС
  * @returns {{total, totalNdsOnly, totalWithoutNds, priceWithoutNds}}
  */
-export default (row, ndsValue, precision = 2, correctWay = true) => {
+export default ({
+                  amount,
+                  price,
+                  ndsValue,
+                  roundMethod = 'floor',
+                  precision = 2,
+                  correctWay = true
+                }) => {
   return correctWay
-    ? calcCorrectly(row, ndsValue, precision)
-    : calcIncorrectly(row, ndsValue, precision)
+    ? calcCorrectly({amount, price, ndsValue, roundMethod, precision})
+    : calcIncorrectly({amount, price, ndsValue, roundMethod, precision})
 }
