@@ -1,6 +1,6 @@
 {
   "name": "nds-calc",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Calculate NDS values for Khmer",
   "module": "src/index.es6.js",
   "main": "src/index.js",
