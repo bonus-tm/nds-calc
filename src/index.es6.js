@@ -49,7 +49,7 @@ const calcIncorrectly = ({amount, price, ndsValue, precision}) => {
  *  {number} ndsValue — значение НДС (0.18)
  *  {string} roundMethod — способ округления копеек ('floor' либо 'round')
  *  {number} precision — до какого знака округлять при расчётах (до копеек, 2)
- *  {boolean} correctWay — использовать правильный или нет способ расчёта НДС
+ *  {boolean} ndsCalcCorrectWay — использовать правильный или нет способ расчёта НДС
  * @returns {{total, totalNdsOnly, totalWithoutNds, priceWithoutNds}}
  */
 export default ({
@@ -58,9 +58,9 @@ export default ({
                   ndsValue,
                   roundMethod = 'floor',
                   precision = 2,
-                  correctWay = true
+                  ndsCalcCorrectWay = true
                 }) => {
-  return correctWay
+  return ndsCalcCorrectWay
     ? calcCorrectly({amount, price, ndsValue, roundMethod, precision})
     : calcIncorrectly({amount, price, ndsValue, roundMethod, precision})
 }
