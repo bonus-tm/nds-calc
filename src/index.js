@@ -54,13 +54,13 @@ const calcIncorrectly = ({ amount, price, ndsValue, precision }) => {
  *  totalWithoutNds — сумма без НДС
  *  priceWithoutNds — цена единицы товара без НДС
  *
- * @param {object}
- *  {number} amount — количество
- *  {number} price — цена с НДС
- *  {number} ndsValue — значение НДС (0.18)
- *  {string} roundMethod — способ округления копеек ('floor' либо 'round')
- *  {number} precision — до какого знака округлять при расчётах (до копеек, 2)
- *  {boolean} ndsCalcCorrectWay — использовать правильный или нет способ расчёта НДС
+ * @param {Object} ndsOptions
+ *  {Number} amount — количество
+ *  {Number} price — цена с НДС
+ *  {Number} ndsValue — значение НДС (0.18)
+ *  {String} roundMethod — способ округления копеек ('floor' либо 'round')
+ *  {Number} precision — до какого знака округлять при расчётах (до копеек, 2)
+ *  {Boolean} ndsCalcCorrectWay — использовать правильный или нет способ расчёта НДС
  * @returns {{total, totalNdsOnly, totalWithoutNds, priceWithoutNds}}
  */
 
@@ -72,5 +72,11 @@ exports.default = ({
   precision = 2,
   ndsCalcCorrectWay = true
 }) => {
+  if (price < 0) return {
+    total: 0,
+    totalNdsOnly: 0,
+    totalWithoutNds: 0,
+    priceWithoutNds: 0
+  };
   return ndsCalcCorrectWay ? calcCorrectly({ amount, price, ndsValue, roundMethod, precision }) : calcIncorrectly({ amount, price, ndsValue, roundMethod, precision });
 };
