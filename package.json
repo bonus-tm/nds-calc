@@ -1,5 +1,5 @@
 {
-  "name": "nds-calc",
+  "name": "@khmer/nds-calc",
   "version": "2.1.1",
   "description": "Calculate NDS values for Khmer",
   "module": "src/index.es6.js",
